@@ -431,6 +431,28 @@ int main()
 			1000.f                           //the far Z-plane
 		);
 
+		Camera* menuCam = new Camera(
+			glm::vec3(-300.0f, 0.0f, -30.f),    //position of camera
+			glm::vec3(0.0f, 0.0f, 1.f),     //the 'forward' of the camera
+			glm::vec3(0.0f, 1.f, 0.0f),     //what 'up' is for the camera
+			60.0f,                          //the field of view in radians
+			(float)width,                   //the width of the window in float
+			(float)height,                  //the height of the window in float
+			0.01f,                          //the near Z-plane
+			1000.f                           //the far Z-plane
+		);
+
+		Camera* creditsCam = new Camera(
+			glm::vec3(300.0f, 0.0f, -30.f),    //position of camera
+			glm::vec3(0.0f, 0.0f, 1.f),     //the 'forward' of the camera
+			glm::vec3(0.0f, 1.f, 0.0f),     //what 'up' is for the camera
+			60.0f,                          //the field of view in radians
+			(float)width,                   //the width of the window in float
+			(float)height,                  //the height of the window in float
+			0.01f,                          //the near Z-plane
+			1000.f                           //the far Z-plane
+		);
+
 		Mesh* cube1Mesh = new Mesh();
 		cube1Mesh->InitWithVertexArray(vertices, _countof(vertices), lightShaderProgram);
 
@@ -551,8 +573,11 @@ int main()
 		cubes[8]->AddVelocity(glm::vec3(0.f, 0.f, 5.0f));
 		cubes[9]->AddVelocity(glm::vec3(0.f, 0.f, 4.0f));
 
+		for (size_t i = 0; i < cubes.size(); i++)
+		{
+			cubes[i]->startVel = cubes[i]->GetVelocity();
+		}
 
-		int cubeCount = 10;
 
 		KDTree* tree = new KDTree();
 
@@ -570,6 +595,8 @@ int main()
 		glfwSetCursorPosCallback(window, mouse_callback);
 		bool firstLeftClick = true;
 		bool firstRightClick = true;
+		bool firstPPress = true;
+		bool playing = true;
 
 		float instantiateSpeed = 6.f;
 		skyboxShader.use();
@@ -587,13 +614,28 @@ int main()
                 {
                     break;
                 }
-				if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+				if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 				{
-					
+					if (firstPPress) {
+						firstPPress = false;
+						playing = !playing;
+					}
+				}
+				else {
+					firstPPress = true;
 				}
 				if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
 				{
-					
+					for (size_t i = 0; i < cubes.size(); i++)
+					{
+						if (i < 10) {
+							cubes[i]->Reset();
+						}
+						else {
+							cubes[i]->enabled = false;
+						}
+					}
+					myCamera->Reset();
 				}
 				
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) 
@@ -626,48 +668,53 @@ int main()
             }
 
             /* GAMEPLAY UPDATE */
-			prevTime = tm;
-			tm = glfwGetTime();
+			if (playing) {
+				prevTime = tm;
+				tm = glfwGetTime();
 
-			float dt = tm - prevTime;
+				float dt = tm - prevTime;
 
 
-			for (size_t i = 0; i < cubes.size(); i++)
-			{
-				cubes[i]->CalculateBox();
-			}
-
-			tree->UpdateTree(cubes, cubes.size());
-
-			tree->CheckCollisions(cubes, cubes.size());
-
-			for (size_t i = 0; i < cubes.size(); i++)
-			{
-				glm::vec3 acc = glm::vec3(0.f,0.f,0.f);
-				for (size_t j = 0; j < cubes.size(); j++)
+				for (size_t i = 0; i < cubes.size(); i++)
 				{
-					if (i != j) {
-						if (!cubes[j]->orbital) {
-							glm::vec3 dir = glm::normalize(cubes[j]->GetPos() - cubes[i]->GetPos());
-							float vel = glm::length(cubes[i]->GetVelocity());
-							if (vel == 0) {
-								vel = .2f;
+					cubes[i]->CalculateBox();
+				}
+
+				tree->UpdateTree(cubes, cubes.size());
+
+				tree->CheckCollisions(cubes, cubes.size());
+
+				for (size_t i = 0; i < cubes.size(); i++)
+				{
+					glm::vec3 acc = glm::vec3(0.f, 0.f, 0.f);
+					for (size_t j = 0; j < cubes.size(); j++)
+					{
+						if (i != j) {
+							if (!cubes[j]->orbital) {
+								glm::vec3 dir = glm::normalize(cubes[j]->GetPos() - cubes[i]->GetPos());
+								float vel = glm::length(cubes[i]->GetVelocity());
+								if (vel == 0) {
+									vel = .2f;
+								}
+								//float centAcc = vel / glm::distance(cubes[0]->GetPos(), cubes[1]->GetPos());
+								acc += dir * vel;
 							}
-							//float centAcc = vel / glm::distance(cubes[0]->GetPos(), cubes[1]->GetPos());
-							acc += dir * vel;
 						}
 					}
+					cubes[i]->SetAcceleration(acc);
 				}
-				cubes[i]->SetAcceleration(acc);
+
+				for (size_t i = 0; i < cubes.size(); i++)
+				{
+					cubes[i]->Update(dt);
+				}
+
+				
+				myCamera->Update();
+				myCamera->UpdateRotation(xposCam, yposCam);
 			}
 			glm::mat4 view = myCamera->viewMatrix;
-			for (size_t i = 0; i < cubes.size(); i++)
-			{
-				cubes[i]->Update(dt);
-			}
-
-            myCamera->Update();
-			myCamera->UpdateRotation(xposCam, yposCam);
+			
 
             /* PRE-RENDER */
             {
@@ -716,6 +763,8 @@ int main()
 		}
 
         delete myCamera;
+		delete menuCam;
+		delete creditsCam;
 		delete tree;
         Input::Release();
     }

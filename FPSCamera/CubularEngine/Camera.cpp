@@ -28,6 +28,10 @@ Camera::Camera(glm::vec3 position,
 	this->pitch = 0.0f;
 
 	this->firstMouse = true;
+
+	startForward = forward;
+	startUp = up;
+	startPos = position;
 }
 
 Camera::~Camera()
@@ -135,4 +139,11 @@ void Camera::UpdateRotation(double xpos, double ypos)
 	front.y = sin(glm::radians(pitch));
 	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	forward = glm::normalize(front);
+}
+
+void Camera::Reset()
+{
+	position = startPos;
+	forward = startForward;
+	up = startUp;
 }

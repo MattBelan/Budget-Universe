@@ -19,6 +19,7 @@ GameEntity::GameEntity(Mesh * mesh,
 	mass = 1.0f;
 	enabled = true;
 	orbital = true;
+	startPos = position;
 }
 
 GameEntity::~GameEntity()
@@ -204,4 +205,11 @@ void GameEntity::AddScale(glm::vec3 scale)
 void GameEntity::SetScale(glm::vec3 scale)
 {
 	this->scale = scale;
+}
+
+void GameEntity::Reset()
+{
+	position = startPos;
+	velocity = startVel;
+	enabled = true;
 }

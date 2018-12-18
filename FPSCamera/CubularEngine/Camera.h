@@ -14,6 +14,11 @@ private:
     float nearZ;    //near Z-plane
     float farZ;     //far  Z-plane
 
+	glm::vec3 startUp;
+	glm::vec3 startRight;
+	glm::vec3 startForward;
+	glm::vec3 startPos;
+
     
 	float pitch;
 	float yaw;
@@ -70,6 +75,8 @@ public:
 	glm::vec3 GetPos() {
 		return position;
 	}
+
+	void Reset();
     //TODO - maybe having getters & setters for other private variables would be
     //useful for you
 };

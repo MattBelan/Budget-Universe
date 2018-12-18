@@ -41,6 +41,8 @@ private:
 	glm::vec3 position;
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
+	glm::vec3 startPos;
+	
 
 	bool gravity;
 
@@ -104,6 +106,10 @@ public:
 	glm::vec3 GetScale() {
 		return scale;
 	}
+
+	glm::vec3 startVel;
+
+	void Reset();
 
 };
 
