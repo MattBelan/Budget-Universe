@@ -1,0 +1,47 @@
+﻿  Camera.cpp
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\camera.cpp(111): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\camera.cpp(112): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\camera.cpp(116): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\camera.cpp(117): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\camera.cpp(118): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\camera.cpp(119): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\camera.cpp(121): warning C4305: 'initializing': truncation from 'double' to 'float'
+  GameEntity.cpp
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\gameentity.cpp(40): warning C4305: '+=': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\gameentity.cpp(92): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\gameentity.cpp(178): warning C4018: '<': signed/unsigned mismatch
+  Input.cpp
+  KDTree.cpp
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.h(28): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.h(42): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.cpp(99): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.cpp(118): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.cpp(145): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.cpp(147): warning C4018: '<': signed/unsigned mismatch
+  Main.cpp
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.h(28): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.h(42): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\main.cpp(630): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Material.cpp
+  Mesh.cpp
+  Node.cpp
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\node.cpp(20): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\node.cpp(41): warning C4018: '<': signed/unsigned mismatch
+  Shader.cpp
+  stb_image.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'D:\209 Code\Repo\DSAIIMerged\FPSCamera\Debug\vc120.pdb'; linking object as if no debug info
+  CubularEngine.vcxproj -> D:\209 Code\Repo\DSAIIMerged\FPSCamera\Debug\CubularEngine.exe
+  A subdirectory or file D:\209 Code\Repo\DSAIIMerged\FPSCamera\Debug\assets already exists.
+  D:\209 Code\Repo\DSAIIMerged\FPSCamera\assets\shaders\fragmentShader.glsl
+  D:\209 Code\Repo\DSAIIMerged\FPSCamera\assets\shaders\lightShader.glsl
+  D:\209 Code\Repo\DSAIIMerged\FPSCamera\assets\shaders\skyboxFragment.glsl
+  D:\209 Code\Repo\DSAIIMerged\FPSCamera\assets\shaders\skyboxVertex.glsl
+  D:\209 Code\Repo\DSAIIMerged\FPSCamera\assets\shaders\vertexShader.glsl
+  5 File(s) copied
