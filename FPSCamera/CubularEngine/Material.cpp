@@ -58,7 +58,11 @@ void Material::Bind(Camera * camera, glm::mat4 worldMatrix)
 	//TODO - cache this as a private varaible (on init) because the location is same every frame
 	GLuint modelToWorldLoc = glGetUniformLocation(shaderProgram, "modelToWorld");
 	glUniformMatrix4fv(modelToWorldLoc, 1, GL_FALSE, &(worldMatrix[0][0]));
-
+	/*
+	Below uniform calls are passing the values needed up to the objects shader, to calculate light shading
+	THis takes into account object color, light color, the positions of the objects, as well as the material the object is considered made out of
+	as well as how shiny that material is
+	*/
 	GLuint colorLamp = glGetUniformLocation(shaderProgram, "lightColor");
 	glUniform3fv(colorLamp,1, &colorLght[0]);
 

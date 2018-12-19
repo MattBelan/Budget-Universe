@@ -54,7 +54,7 @@ void Mesh::CreateBuffers(GLuint shaderProgram)
 		6 * sizeof(GLfloat),	//stride - how many index to skip ahead to reach more of this data
 		(GLvoid*)0);			//offset - how many index to skip to reach first value
 	glEnableVertexAttribArray(attribIndex);	//enable what we just did earlier 
-
+	//set up the new vertex array to also take in normal positions used in lighting calculations
 	GLuint normalIndex = glGetAttribLocation(shaderProgram, "aNormal");
 	glVertexAttribPointer(
 		normalIndex,			//index of attribute

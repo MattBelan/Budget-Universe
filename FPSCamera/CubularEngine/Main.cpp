@@ -14,6 +14,12 @@
 ///Resources used for SLERPING
 ///http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
 ///https://glm.g-truc.net/0.9.2/api/a00246.html
+///Lighting stuff, based on this but translated to fit Tanat's system
+///https://learnopengl.com/Lighting/Basic-Lighting
+///Skybox
+///https://learnopengl.com/Advanced-OpenGL/Cubemaps
+///DynamicShader is based on the shader built in the LearnOpengl.com tutorials, allows for easier dynamic objects
+///https://learnopengl.com/Getting-started/OpenGL
 
 #include "stdafx.h"
 #include "Shader.h"
@@ -50,7 +56,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	xposCam = xpos;
 	yposCam = ypos;
 }
-
+//function to load skybox, takes in vector of different image values
 unsigned int loadSkybox(std::vector<std::string> faces) {
 
 	unsigned int textureID;
@@ -58,6 +64,7 @@ unsigned int loadSkybox(std::vector<std::string> faces) {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	int width, height, nrChannels;
+	//loads each face png of the cube map
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{
 		unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
@@ -74,6 +81,7 @@ unsigned int loadSkybox(std::vector<std::string> faces) {
 			stbi_image_free(data);
 		}
 	}
+	//creates texture ID along with the image values
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -237,6 +245,7 @@ int main()
 #ifdef _DEBUG
         std::cout << "Shaders compiled attached, and linked!" << std::endl;
 #endif // _DEBUG
+		//position of the light to use for angle calculations
 		glm::vec3 lightPosition = glm::vec3(0.f, 25.f, -5.f);
         //init the mesh (the cubes)
         //TODO - replace this with model loading
@@ -283,8 +292,9 @@ int main()
 			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
 			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 		};
-
+		//passes shaders to properly display the skybox
 		DynamicShader skyboxShader("assets/shaders/skyboxVertex.glsl", "assets/shaders/skyboxFragment.glsl");
+		//position of the skybox vertices, basically just a cube
 		float skyboxVertices[] = {
 			// positions          
 			-1.0f,  1.0f, -1.0f,
@@ -330,7 +340,7 @@ int main()
 			1.0f, -1.0f,  1.0f
 		};
 
-
+		//creates a manual skybox vao and vbo, since we only use it once 
 		unsigned int skyboxVAO, skyboxVBO;
 		glGenVertexArrays(1, &skyboxVAO);
 		glGenBuffers(1, &skyboxVBO);
@@ -339,7 +349,7 @@ int main()
 		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
+		//face data for game
 		std::vector<std::string> faces
 		{
 			"assets/Skymap/right.png",
@@ -349,7 +359,7 @@ int main()
 			"assets/SkyMap/front.png",
 			"assets/Skymap/back.png"
 		};
-
+		//face data for main menu
 		std::vector<std::string> mainFaces
 		{
 			"assets/Skymap/right.png",
@@ -475,7 +485,7 @@ int main()
 
 		Mesh* cube1Mesh = new Mesh();
 		cube1Mesh->InitWithVertexArray(vertices, _countof(vertices), lightShaderProgram);
-
+		//vec3's to pass to the lighted object shader, so that they can represent light correctly
 		glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
 		glm::vec3 ambientColor = glm::vec3(.5f, 0.5f, .8f);
