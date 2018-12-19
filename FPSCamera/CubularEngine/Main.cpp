@@ -1,5 +1,6 @@
-//HW3 - FPS Camera
+//Final Project
 //Matt Belanger
+//Chase Slattery
 
 //Sources/References
 ///Tanat's In-Class Example of the Cube, Cubular Engine, and Cylinder Example
