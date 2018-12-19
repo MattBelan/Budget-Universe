@@ -1,6 +1,7 @@
 #include "GameEntity.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include <iostream>
+#include <glm/gtc/quaternion.hpp>
 
 GameEntity::GameEntity(Mesh * mesh, 
     Material * material,
@@ -20,6 +21,8 @@ GameEntity::GameEntity(Mesh * mesh,
 	enabled = true;
 	orbital = true;
 	startPos = position;
+	startQuat = glm::quat(eulerAngles);
+	rotQuat = glm::quat(glm::vec3(0, 180, 0));
 }
 
 GameEntity::~GameEntity()
@@ -38,8 +41,18 @@ void GameEntity::Update(float dt)
 		worldMatrix = glm::identity<glm::mat4>();
 		worldMatrix = glm::translate(worldMatrix, position);
 		if (!orbital) {
-			eulerAngles.y += .01;
-			worldMatrix = glm::rotate(worldMatrix, eulerAngles.y, glm::vec3(0.f, 1.f, 0.f));
+			//eulerAngles.y += .01;
+			//worldMatrix = glm::rotate(worldMatrix, eulerAngles.y, glm::vec3(0.f, 1.f, 0.f));
+
+			timer += .01f;
+			glm::quat interQuat = glm::mix(startQuat, rotQuat, timer);
+			glm::mat4 rotMatrix = glm::mat4_cast(interQuat);
+			worldMatrix = worldMatrix * rotMatrix;
+
+			//glm::vec3 tempEuler = eulerAngles;
+			//tempEuler.y += 180;
+			
+			//worldMatrix = glm::mix(worldMatrix, glm::rotate(worldMatrix, tempEuler.y, glm::vec3(0.f, 1.f, 0.f)), timer);
 		}
 		worldMatrix = glm::scale(worldMatrix, scale);
 	}

@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
+#include <glm/gtc/quaternion.hpp>
 
 using namespace std;
 
@@ -577,7 +578,6 @@ int main()
 		{
 			cubes[i]->startVel = cubes[i]->GetVelocity();
 		}
-
 
 		KDTree* tree = new KDTree();
 

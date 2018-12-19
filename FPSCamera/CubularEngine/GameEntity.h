@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Camera.h"
+#include <glm/gtc/quaternion.hpp>
 
 
 struct AABB {
@@ -43,8 +44,10 @@ private:
 	glm::vec3 acceleration;
 	glm::vec3 startPos;
 	
-
+	float timer=0;
 	bool gravity;
+	glm::quat startQuat;
+	glm::quat rotQuat;
 
 public: 
     /// <summary>
