@@ -13,6 +13,7 @@ Node::~Node()
 {
 }
 
+//removes the desired node from this nodes branches
 void Node::RemoveNode(Node *obj)
 {
 	if (numNodes > 0) {
@@ -28,12 +29,14 @@ void Node::RemoveNode(Node *obj)
 	}
 }
 
+//adds a node to this node's branches
 void Node::AddNode(Node *obj)
 {
 	numNodes++;
 	nodes.push_back(obj);
 }
 
+//removes the desired object from this node
 void Node::RemoveObj(GameEntity * obj)
 {
 	if (numObjs > 0) {
@@ -49,12 +52,14 @@ void Node::RemoveObj(GameEntity * obj)
 	}
 }
 
+//adds the object to this node
 void Node::AddObj(GameEntity * obj)
 {
 	numObjs++;
 	objects.push_back(obj);
 }
 
+//clears all objetcs from this node
 void Node::ClearObjs()
 {
 	objects.clear();

@@ -113,6 +113,7 @@ public:
 	glm::vec3 startVel;
 
 	void Reset();
+	void SLERP(float dt);
 
 };
 

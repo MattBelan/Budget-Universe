@@ -29,6 +29,7 @@ GameEntity::~GameEntity()
 {
 }
 
+//updates the object
 void GameEntity::Update(float dt)
 {
 	if (enabled) {
@@ -41,23 +42,14 @@ void GameEntity::Update(float dt)
 		worldMatrix = glm::identity<glm::mat4>();
 		worldMatrix = glm::translate(worldMatrix, position);
 		if (!orbital) {
-			//eulerAngles.y += .01;
-			//worldMatrix = glm::rotate(worldMatrix, eulerAngles.y, glm::vec3(0.f, 1.f, 0.f));
-
-			timer += .01f;
-			glm::quat interQuat = glm::mix(startQuat, rotQuat, timer);
-			glm::mat4 rotMatrix = glm::mat4_cast(interQuat);
-			worldMatrix = worldMatrix * rotMatrix;
-
-			//glm::vec3 tempEuler = eulerAngles;
-			//tempEuler.y += 180;
-			
-			//worldMatrix = glm::mix(worldMatrix, glm::rotate(worldMatrix, tempEuler.y, glm::vec3(0.f, 1.f, 0.f)), timer);
+			eulerAngles.y += .01;
+			worldMatrix = glm::rotate(worldMatrix, eulerAngles.y, glm::vec3(0.f, 1.f, 0.f));
 		}
 		worldMatrix = glm::scale(worldMatrix, scale);
 	}
 }
 
+//renders the object
 void GameEntity::Render(Camera* camera)
 {
 	if (enabled) {
@@ -66,36 +58,43 @@ void GameEntity::Render(Camera* camera)
 	}
 }
 
+//adds position to the object
 void GameEntity::AddPosition(glm::vec3 pos)
 {
 	position += pos;
 }
 
+//adds velocity to the object
 void GameEntity::AddVelocity(glm::vec3 vel)
 {
 	velocity += vel;
 }
 
+//set the velocity of the object
 void GameEntity::SetVelocity(glm::vec3 vel)
 {
 	velocity = vel;
 }
 
+//Adds acceleration to the object
 void GameEntity::AddAcceleration(glm::vec3 acc)
 {
 	acceleration += acc;
 }
 
+//Sets the acceleration
 void GameEntity::SetAcceleration(glm::vec3 acc)
 {
 	acceleration = acc;
 }
 
+//toggles gravit for the objects
 void GameEntity::ToggleGravity()
 {
 	gravity = !gravity;
 }
 
+//calculated the bounding box of the object
 void GameEntity::CalculateBox()
 {
 	AABB newBox;
@@ -142,6 +141,7 @@ void GameEntity::CalculateBox()
 	box.max.z = newBox.max.z;
 }
 
+//cets the points of the bounding box
 std::vector<glm::vec3> GameEntity::GetPoints()
 {
 	std::vector<glm::vec3> points;
@@ -159,6 +159,7 @@ std::vector<glm::vec3> GameEntity::GetPoints()
 	return points;
 }
 
+//gets the normals of the bounding box
 std::vector<glm::vec3> GameEntity::GetNormals()
 {
 	std::vector<glm::vec3> normals;
@@ -182,6 +183,7 @@ std::vector<glm::vec3> GameEntity::GetNormals()
 	return normals;
 }
 
+//gets the minimum and maximum bounds of the bounding box
 void GameEntity::GetMinMax(glm::vec3 axis, float & min, float & max)
 {
 	std::vector<glm::vec3> points = GetPoints();
@@ -205,24 +207,37 @@ void GameEntity::GetMinMax(glm::vec3 axis, float & min, float & max)
 	}
 }
 
+//Sets the mass of the object
 void GameEntity::SetMass(float mass)
 {
 	this->mass = mass;
 }
 
+//Add scale to the object
 void GameEntity::AddScale(glm::vec3 scale)
 {
 	this->scale += scale;
 }
 
+//Set scale of the object
 void GameEntity::SetScale(glm::vec3 scale)
 {
 	this->scale = scale;
 }
 
+//reset's the object's position and velocity
 void GameEntity::Reset()
 {
 	position = startPos;
 	velocity = startVel;
 	enabled = true;
+}
+
+//slerps the objects around the designated axis based on time
+void GameEntity::SLERP(float dt)
+{
+	timer += dt;
+	glm::quat interQuat = glm::mix(startQuat, rotQuat, timer);
+	glm::mat4 rotMatrix = glm::mat4_cast(interQuat);
+	worldMatrix = worldMatrix * rotMatrix;
 }

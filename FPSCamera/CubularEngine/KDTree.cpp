@@ -36,12 +36,14 @@ KDTree::~KDTree()
 	}
 }
 
+//Puts specified object as a leaf of one of the nodes of the tree
+//tree changes depending on the position of the center planet
 void KDTree::PutInTree(GameEntity * obj)
 {
 	glm::vec3 pos = obj->GetPos();
-	if (glm::dot(pos, glm::vec3(1.0f, 0, 0)) > 0) {
-		if (glm::dot(pos, glm::vec3(0, 1.0f, 0)) > 0) {
-			if (glm::dot(pos, glm::vec3(0, 0, 1.0f)) > 0) {
+	if (glm::dot(pos, glm::vec3(1.0f, 0, 0)+center->GetPos()) > 0) {
+		if (glm::dot(pos, glm::vec3(0, 1.0f, 0) + center->GetPos()) > 0) {
+			if (glm::dot(pos, glm::vec3(0, 0, 1.0f) + center->GetPos()) > 0) {
 				tree[3]->AddObj(obj);
 				return;
 			}
@@ -51,7 +53,7 @@ void KDTree::PutInTree(GameEntity * obj)
 			}
 		}
 		else {
-			if (glm::dot(pos, glm::vec3(0, 0, 1.0f)) > 0) {
+			if (glm::dot(pos, glm::vec3(0, 0, 1.0f) + center->GetPos()) > 0) {
 				tree[5]->AddObj(obj);
 				return;
 			}
@@ -62,8 +64,8 @@ void KDTree::PutInTree(GameEntity * obj)
 		}
 	}
 	else {
-		if (glm::dot(pos, glm::vec3(0, 1.0f, 0)) > 0) {
-			if (glm::dot(pos, glm::vec3(0, 0, 1.0f)) > 0) {
+		if (glm::dot(pos, glm::vec3(0, 1.0f, 0) + center->GetPos()) > 0) {
+			if (glm::dot(pos, glm::vec3(0, 0, 1.0f) + center->GetPos()) > 0) {
 				tree[10]->AddObj(obj);
 				return;
 			}
@@ -73,7 +75,7 @@ void KDTree::PutInTree(GameEntity * obj)
 			}
 		}
 		else {
-			if (glm::dot(pos, glm::vec3(0, 0, 1.0f)) > 0) {
+			if (glm::dot(pos, glm::vec3(0, 0, 1.0f) + center->GetPos()) > 0) {
 				tree[12]->AddObj(obj);
 				return;
 			}
@@ -85,6 +87,7 @@ void KDTree::PutInTree(GameEntity * obj)
 	}
 }
 
+//Clears all objects from the tree
 void KDTree::ClearObjsInTree()
 {
 	for (size_t i = 0; i < 14; i++)
@@ -93,6 +96,7 @@ void KDTree::ClearObjsInTree()
 	}
 }
 
+//Clears the tree and places all active objects in the tree
 void KDTree::UpdateTree(vector<GameEntity*> objs, int numObjs)
 {
 	ClearObjsInTree();
@@ -104,6 +108,7 @@ void KDTree::UpdateTree(vector<GameEntity*> objs, int numObjs)
 	}
 }
 
+//checks if two objects are in the same node
 bool KDTree::CheckIfSameSpace(GameEntity * obj1, GameEntity * obj2)
 {
 	vector<GameEntity*> nodeObjs;
@@ -132,6 +137,8 @@ bool KDTree::CheckIfSameSpace(GameEntity * obj1, GameEntity * obj2)
 	return false;
 }
 
+//checks each node's objects against each other to see if there are collisions
+///on a collision, momentum between the objects is preserved, and the larger of the objects grows in scale
 void KDTree::CheckCollisions(vector<GameEntity*> objs, int numTotalObjs)
 {
 	vector<GameEntity*> nodeObjs;
@@ -190,4 +197,42 @@ void KDTree::CheckCollisions(vector<GameEntity*> objs, int numTotalObjs)
 		}
 	}
 	
+}
+
+//checks to see if there are any collisions
+bool KDTree::SAT(GameEntity a, GameEntity b)
+{
+	std::vector<glm::vec3> aNormals = a.GetNormals();
+	std::vector<glm::vec3> bNormals = b.GetNormals();
+
+	bool notColliding = false;
+
+	for (int i = 0; i < aNormals.size(); i++)
+	{
+		float aMin, aMax;
+		a.GetMinMax(aNormals[i], aMin, aMax);
+
+		float bMin, bMax;
+		b.GetMinMax(aNormals[i], bMin, bMax);
+
+		notColliding = aMax < bMin || bMax < aMin;
+		if (notColliding) break;
+	}
+
+	if (!notColliding)
+	{
+		for (int i = 0; i < bNormals.size(); i++)
+		{
+			float aMin, aMax;
+			a.GetMinMax(bNormals[i], aMin, aMax);
+
+			float bMin, bMax;
+			b.GetMinMax(bNormals[i], bMin, bMax);
+
+			notColliding = aMax < bMin || bMax < aMin;
+			if (notColliding) break;
+		}
+	}
+
+	return !notColliding;
 }

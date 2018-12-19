@@ -6,6 +6,13 @@
 ///Midterm Practical
 ///Camera stuff borrowed from here:
 ///https://learnopengl.com/Getting-started/Camera
+///Sources for SAT
+///https://github.com/IGME-RIT/physics-SAT3DAABB
+///Sources for KD-Tree
+///https://github.com/IGME-RIT/OpenGL_KD_Tree
+///Resources used for SLERPING
+///http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+///https://glm.g-truc.net/0.9.2/api/a00246.html
 
 #include "stdafx.h"
 #include "Shader.h"
@@ -338,11 +345,21 @@ int main()
 			"assets/Skymap/left.png",
 			"assets/Skymap/top.png",
 			"assets/Skymap/bot.png",
-			"assets/Skymap/front.png",
+			"assets/SkyMap/front.png",
 			"assets/Skymap/back.png"
 		};
 
-		unsigned int cubemapTexture = loadSkybox(faces);
+		std::vector<std::string> mainFaces
+		{
+			"assets/Skymap/right.png",
+			"assets/Skymap/left.png",
+			"assets/Skymap/top.png",
+			"assets/Skymap/bot.png",
+			"assets/Menus/mainMenu.png",
+			"assets/Skymap/back.png"
+		};
+
+		unsigned int cubemapTexture = loadSkybox(mainFaces);
 		//cube1
 		float cube1X = 0.0f;
 		float cube1Y = 0.0f;
@@ -596,6 +613,7 @@ int main()
 		}
 
 		KDTree* tree = new KDTree();
+		tree->center = cubes[0];
 
         Input::GetInstance()->Init(window);
 
@@ -616,8 +634,8 @@ int main()
 		bool firstRightClick = true;
 		bool firstPPress = true;
 		bool playing = true;
-		bool menu = false;
-		bool game = true;
+		bool menu = true;
+		bool game = false;
 		bool credits = false;
 
 		float instantiateSpeed = 6.f;
@@ -636,31 +654,44 @@ int main()
                 {
                     break;
                 }
-				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) //switches to the menu
 				{
 					menu = true;
 					game = false;
 					credits = false;
 					myCamera->position = menuPos;
+					cubemapTexture = loadSkybox(mainFaces);
 				}
-				if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+				if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) //switches to the game
 				{
 					menu = false;
 					game = true;
 					credits = false;
 					myCamera->position = gamePos;
+					cubemapTexture = loadSkybox(faces);
+					for (size_t i = 0; i < cubes.size(); i++)
+					{
+						if (i < 10) {
+							cubes[i]->Reset();
+						}
+						else {
+							cubes[i]->enabled = false;
+						}
+					}
+					myCamera->Reset();
 				}
-				if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+				if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) //switches to the credits
 				{
 					menu = false;
 					game = false;
 					credits = true;
 					myCamera->position = creditsPos;
+					unsigned int cubemapTexture = loadSkybox(mainFaces);
 				}
 				
 				if (game) 
 				{
-					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) // pauses the game
 					{
 						if (firstPPress) {
 							firstPPress = false;
@@ -670,7 +701,7 @@ int main()
 					else {
 						firstPPress = true;
 					}
-					if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+					if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) //resets the game
 					{
 						for (size_t i = 0; i < cubes.size(); i++)
 						{
@@ -684,7 +715,7 @@ int main()
 						myCamera->Reset();
 					}
 
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) //creates an object with no gravity
 					{
 						if (firstLeftClick) {
 							firstLeftClick = false;
@@ -697,7 +728,7 @@ int main()
 						firstLeftClick = true;
 					}
 
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) //creates an object with gravity
 					{
 						if (firstRightClick) {
 							firstRightClick = false;
@@ -789,7 +820,14 @@ int main()
 				}
 			
 				if (menu) {
+					prevTime = tm;
+					tm = glfwGetTime();
+
+					float dt = tm - prevTime;
+					menuBox->SLERP(dt);
 					//myCamera->Update();
+					myCamera->Update();
+					myCamera->UpdateRotation(xposCam, yposCam);
 					glm::mat4 view = myCamera->viewMatrix;
 					/* PRE-RENDER */
 					{
@@ -817,7 +855,8 @@ int main()
 				}
 
 				if (credits) {
-					//myCamera->Update();
+					myCamera->Update();
+					myCamera->UpdateRotation(xposCam, yposCam);
 					glm::mat4 view = myCamera->viewMatrix;
 					/* PRE-RENDER */
 					{

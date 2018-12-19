@@ -1,7 +1,27 @@
-﻿  Main.cpp
+﻿  GameEntity.cpp
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\gameentity.cpp(44): warning C4305: '+=': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\gameentity.cpp(96): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\gameentity.cpp(182): warning C4018: '<': signed/unsigned mismatch
+  KDTree.cpp
 d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.h(28): warning C4018: '<': signed/unsigned mismatch
 d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.h(42): warning C4018: '<': signed/unsigned mismatch
-d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\main.cpp(718): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.cpp(99): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.cpp(118): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.cpp(145): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.cpp(147): warning C4018: '<': signed/unsigned mismatch
+  Main.cpp
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.h(28): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\kdtree.h(42): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\main.cpp(741): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\main.cpp(816): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Node.cpp
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\node.cpp(20): warning C4018: '<': signed/unsigned mismatch
+d:\209 code\repo\dsaiimerged\fpscamera\cubularengine\node.cpp(41): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
   CubularEngine.vcxproj -> D:\209 Code\Repo\DSAIIMerged\FPSCamera\Debug\CubularEngine.exe
   A subdirectory or file D:\209 Code\Repo\DSAIIMerged\FPSCamera\Debug\assets already exists.
   D:\209 Code\Repo\DSAIIMerged\FPSCamera\assets\shaders\fragmentShader.glsl
