@@ -32,6 +32,7 @@ Camera::Camera(glm::vec3 position,
 	startForward = forward;
 	startUp = up;
 	startPos = position;
+	gameCam = false;
 }
 
 Camera::~Camera()
@@ -48,38 +49,40 @@ void Camera::Update()
 
     //TODO - cache the pointer to the Input single instance instead of calling 
     //       GetInstance() multiple times
-    if (Input::GetInstance()->IsKeyDown(GLFW_KEY_A))
-    {
-        //TODO - change this to move along local axes instead of global axes
-		position += right;
-    } 
-     
-    //TODO - cache the pointer to the Input single instance instead of calling 
-    //       GetInstance() multiple times
-    else if (Input::GetInstance()->IsKeyDown(GLFW_KEY_D))
-    {
-        //TODO - change this to move along local axes instead of global axes
-		position -= right;
-    } 
+	if (gameCam) {
+		if (Input::GetInstance()->IsKeyDown(GLFW_KEY_A))
+		{
+			//TODO - change this to move along local axes instead of global axes
+			position += right;
+		}
 
-	//forward/backward
-	if (Input::GetInstance()->IsKeyDown(GLFW_KEY_W)) {
-		position += forward;
+		//TODO - cache the pointer to the Input single instance instead of calling 
+		//       GetInstance() multiple times
+		else if (Input::GetInstance()->IsKeyDown(GLFW_KEY_D))
+		{
+			//TODO - change this to move along local axes instead of global axes
+			position -= right;
+		}
+
+		//forward/backward
+		if (Input::GetInstance()->IsKeyDown(GLFW_KEY_W)) {
+			position += forward;
+		}
+
+		else if (Input::GetInstance()->IsKeyDown(GLFW_KEY_S)) {
+			position -= forward;
+		}
+
+		//up/down
+		if (Input::GetInstance()->IsKeyDown(GLFW_KEY_E)) {
+			position += up;
+		}
+
+		else if (Input::GetInstance()->IsKeyDown(GLFW_KEY_Q)) {
+			position -= up;
+		}
+
 	}
-
-	else if (Input::GetInstance()->IsKeyDown(GLFW_KEY_S)) {
-		position -= forward;
-	}
-
-	//up/down
-	if (Input::GetInstance()->IsKeyDown(GLFW_KEY_E)) {
-		position += up;
-	}
-
-	else if (Input::GetInstance()->IsKeyDown(GLFW_KEY_Q)) {
-		position -= up;
-	}
-
 
     //this call may not be needed every frame
     forward = glm::normalize<3>(forward);   

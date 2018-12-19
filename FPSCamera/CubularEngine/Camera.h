@@ -26,6 +26,7 @@ private:
 	float lastY;
 
 	bool firstMouse;
+	
 
 public:
 
@@ -77,6 +78,7 @@ public:
 	}
 
 	void Reset();
+	bool gameCam;
     //TODO - maybe having getters & setters for other private variables would be
     //useful for you
 };

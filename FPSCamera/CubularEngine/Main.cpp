@@ -431,6 +431,7 @@ int main()
 			0.01f,                          //the near Z-plane
 			1000.f                           //the far Z-plane
 		);
+		myCamera->gameCam = true;
 
 		Camera* menuCam = new Camera(
 			glm::vec3(-300.0f, 0.0f, -30.f),    //position of camera
@@ -547,6 +548,21 @@ int main()
 			glm::vec3(.5f, .5f, .5f)
 		);
 
+		GameEntity* menuBox = new GameEntity(
+			cube1Mesh,
+			myMaterial,
+			glm::vec3(-300.0f, 0.0f, 0.0f),
+			glm::vec3(0.f, 0.f, 0.f),
+			glm::vec3(1.f, 1.f, 1.f)
+		);
+		GameEntity* creditsBox = new GameEntity(
+			cube1Mesh,
+			myMaterial,
+			glm::vec3(300.0f, 0.0f, 0.0f),
+			glm::vec3(0.f, 0.f, 0.f),
+			glm::vec3(1.f, 1.f, 1.f)
+		);
+
         
 
 		vector<GameEntity*> cubes;
@@ -590,6 +606,9 @@ int main()
 		yposCam = 300;
 
 		tm = 0.0f;
+		glm::vec3 gamePos = glm::vec3(0.0f, 0.0f, -30.f);
+		glm::vec3 menuPos = glm::vec3(-300.f, 0.f, -10.f);
+		glm::vec3 creditsPos = glm::vec3(300.f, 0.f, -10.f);
 
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPosCallback(window, mouse_callback);
@@ -597,6 +616,9 @@ int main()
 		bool firstRightClick = true;
 		bool firstPPress = true;
 		bool playing = true;
+		bool menu = false;
+		bool game = true;
+		bool credits = false;
 
 		float instantiateSpeed = 6.f;
 		skyboxShader.use();
@@ -605,7 +627,7 @@ int main()
         while (!glfwWindowShouldClose(window))
         {
             /* INPUT */
-            {
+            
                 //checks events to see if there are pending input
                 glfwPollEvents();
 
@@ -614,134 +636,214 @@ int main()
                 {
                     break;
                 }
-				if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 				{
-					if (firstPPress) {
-						firstPPress = false;
-						playing = !playing;
-					}
+					menu = true;
+					game = false;
+					credits = false;
+					myCamera->position = menuPos;
 				}
-				else {
-					firstPPress = true;
-				}
-				if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+				if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 				{
-					for (size_t i = 0; i < cubes.size(); i++)
-					{
-						if (i < 10) {
-							cubes[i]->Reset();
-						}
-						else {
-							cubes[i]->enabled = false;
-						}
-					}
-					myCamera->Reset();
+					menu = false;
+					game = true;
+					credits = false;
+					myCamera->position = gamePos;
+				}
+				if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+				{
+					menu = false;
+					game = false;
+					credits = true;
+					myCamera->position = creditsPos;
 				}
 				
-				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) 
+				if (game) 
 				{
-					if (firstLeftClick) {
-						firstLeftClick = false;
-						cubes.push_back(new GameEntity(cube1Mesh, myMaterial, myCamera->GetPos(), glm::vec3(0.f, 0.f, 0.f),
-							glm::vec3(.5f, .5f, .5f)));
-						cubes.back()->AddVelocity(myCamera->forward*instantiateSpeed);
-					}
-				}
-				else {
-					firstLeftClick = true;
-				}
-
-				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-				{
-					if (firstRightClick) {
-						firstRightClick = false;
-						cubes.push_back(new GameEntity(cube1Mesh, myMaterial, myCamera->GetPos(), glm::vec3(0.f, 0.f, 0.f),
-							glm::vec3(1.f, 1.f, 1.f)));
-						cubes.back()->AddVelocity(myCamera->forward*instantiateSpeed*2.f);
-						cubes.back()->orbital = false;
-						cubes.back()->SetMass(5.f);
-					}
-				}
-				else {
-					firstRightClick = true;
-				}
-            }
-
-            /* GAMEPLAY UPDATE */
-			if (playing) {
-				prevTime = tm;
-				tm = glfwGetTime();
-
-				float dt = tm - prevTime;
-
-
-				for (size_t i = 0; i < cubes.size(); i++)
-				{
-					cubes[i]->CalculateBox();
-				}
-
-				tree->UpdateTree(cubes, cubes.size());
-
-				tree->CheckCollisions(cubes, cubes.size());
-
-				for (size_t i = 0; i < cubes.size(); i++)
-				{
-					glm::vec3 acc = glm::vec3(0.f, 0.f, 0.f);
-					for (size_t j = 0; j < cubes.size(); j++)
+					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 					{
-						if (i != j) {
-							if (!cubes[j]->orbital) {
-								glm::vec3 dir = glm::normalize(cubes[j]->GetPos() - cubes[i]->GetPos());
-								float vel = glm::length(cubes[i]->GetVelocity());
-								if (vel == 0) {
-									vel = .2f;
-								}
-								//float centAcc = vel / glm::distance(cubes[0]->GetPos(), cubes[1]->GetPos());
-								acc += dir * vel;
+						if (firstPPress) {
+							firstPPress = false;
+							playing = !playing;
+						}
+					}
+					else {
+						firstPPress = true;
+					}
+					if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+					{
+						for (size_t i = 0; i < cubes.size(); i++)
+						{
+							if (i < 10) {
+								cubes[i]->Reset();
+							}
+							else {
+								cubes[i]->enabled = false;
 							}
 						}
+						myCamera->Reset();
 					}
-					cubes[i]->SetAcceleration(acc);
-				}
 
-				for (size_t i = 0; i < cubes.size(); i++)
-				{
-					cubes[i]->Update(dt);
-				}
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+					{
+						if (firstLeftClick) {
+							firstLeftClick = false;
+							cubes.push_back(new GameEntity(cube1Mesh, myMaterial, myCamera->GetPos(), glm::vec3(0.f, 0.f, 0.f),
+								glm::vec3(.5f, .5f, .5f)));
+							cubes.back()->AddVelocity(myCamera->forward*instantiateSpeed);
+						}
+					}
+					else {
+						firstLeftClick = true;
+					}
 
-				
-				myCamera->Update();
-				myCamera->UpdateRotation(xposCam, yposCam);
-			}
-			glm::mat4 view = myCamera->viewMatrix;
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+					{
+						if (firstRightClick) {
+							firstRightClick = false;
+							cubes.push_back(new GameEntity(cube1Mesh, myMaterial, myCamera->GetPos(), glm::vec3(0.f, 0.f, 0.f),
+								glm::vec3(1.f, 1.f, 1.f)));
+							cubes.back()->AddVelocity(myCamera->forward*instantiateSpeed*2.f);
+							cubes.back()->orbital = false;
+							cubes.back()->SetMass(5.f);
+						}
+					}
+					else {
+						firstRightClick = true;
+					}
+
+					/* GAMEPLAY UPDATE */
+					if (playing) {
+						prevTime = tm;
+						tm = glfwGetTime();
+
+						float dt = tm - prevTime;
+
+
+						for (size_t i = 0; i < cubes.size(); i++)
+						{
+							cubes[i]->CalculateBox();
+						}
+
+						tree->UpdateTree(cubes, cubes.size());
+
+						tree->CheckCollisions(cubes, cubes.size());
+
+						for (size_t i = 0; i < cubes.size(); i++)
+						{
+							glm::vec3 acc = glm::vec3(0.f, 0.f, 0.f);
+							for (size_t j = 0; j < cubes.size(); j++)
+							{
+								if (i != j) {
+									if (!cubes[j]->orbital) {
+										glm::vec3 dir = glm::normalize(cubes[j]->GetPos() - cubes[i]->GetPos());
+										float vel = glm::length(cubes[i]->GetVelocity());
+										if (vel == 0) {
+											vel = .2f;
+										}
+										//float centAcc = vel / glm::distance(cubes[0]->GetPos(), cubes[1]->GetPos());
+										acc += dir * vel;
+									}
+								}
+							}
+							cubes[i]->SetAcceleration(acc);
+						}
+
+						for (size_t i = 0; i < cubes.size(); i++)
+						{
+							cubes[i]->Update(dt);
+						}
+
+
+						myCamera->Update();
+						myCamera->UpdateRotation(xposCam, yposCam);
+					}
+					glm::mat4 view = myCamera->viewMatrix;
+
+					/* PRE-RENDER */
+					{
+						//start off with clearing the 'color buffer'
+						glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+						//clear the window to have c o r n f l o w e r   b l u e
+						glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
+					}
+
+					/* RENDER */
+					for (size_t i = 0; i < cubes.size(); i++)
+					{
+						cubes[i]->Render(myCamera);
+					}
+					glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+					skyboxShader.use();
+					view = glm::mat4(glm::mat3(myCamera->viewMatrix)); // remove translation from the view matrix
+					skyboxShader.setMat4("view", view);
+					skyboxShader.setMat4("projection", myCamera->projectionMatrix);
+
+					glBindVertexArray(skyboxVAO);
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+					glDrawArrays(GL_TRIANGLES, 0, 36);
+					glBindVertexArray(0);
+					glDepthFunc(GL_LESS);
+				}
 			
+				if (menu) {
+					//myCamera->Update();
+					glm::mat4 view = myCamera->viewMatrix;
+					/* PRE-RENDER */
+					{
+						//start off with clearing the 'color buffer'
+						glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            /* PRE-RENDER */
-            {
-                //start off with clearing the 'color buffer'
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+						//clear the window to have c o r n f l o w e r   b l u e
+						glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
+					}
 
-                //clear the window to have c o r n f l o w e r   b l u e
-                glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
-            }
+					/* RENDER */
+					menuBox->Render(myCamera);
+					glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+					skyboxShader.use();
+					view = glm::mat4(glm::mat3(myCamera->viewMatrix)); // remove translation from the view matrix
+					skyboxShader.setMat4("view", view);
+					skyboxShader.setMat4("projection", myCamera->projectionMatrix);
 
-            /* RENDER */
-			for (size_t i = 0; i < cubes.size(); i++)
-			{
-				cubes[i]->Render(myCamera);
-			}
-			glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-			skyboxShader.use();
-			view = glm::mat4(glm::mat3(myCamera->viewMatrix)); // remove translation from the view matrix
-			skyboxShader.setMat4("view", view);
-			skyboxShader.setMat4("projection", myCamera->projectionMatrix);
+					glBindVertexArray(skyboxVAO);
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+					glDrawArrays(GL_TRIANGLES, 0, 36);
+					glBindVertexArray(0);
+					glDepthFunc(GL_LESS);
+				}
 
-			glBindVertexArray(skyboxVAO);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			glBindVertexArray(0);
-			glDepthFunc(GL_LESS);
+				if (credits) {
+					//myCamera->Update();
+					glm::mat4 view = myCamera->viewMatrix;
+					/* PRE-RENDER */
+					{
+						//start off with clearing the 'color buffer'
+						glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+						//clear the window to have c o r n f l o w e r   b l u e
+						glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
+					}
+
+					/* RENDER */
+					creditsBox->Render(myCamera);
+					glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+					skyboxShader.use();
+					view = glm::mat4(glm::mat3(myCamera->viewMatrix)); // remove translation from the view matrix
+					skyboxShader.setMat4("view", view);
+					skyboxShader.setMat4("projection", myCamera->projectionMatrix);
+
+					glBindVertexArray(skyboxVAO);
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+					glDrawArrays(GL_TRIANGLES, 0, 36);
+					glBindVertexArray(0);
+					glDepthFunc(GL_LESS);
+				}
+
             /* POST-RENDER */
             {
                 //'clear' for next draw call
@@ -766,6 +868,8 @@ int main()
 		delete menuCam;
 		delete creditsCam;
 		delete tree;
+		delete menuBox;
+		delete creditsBox;
         Input::Release();
     }
 
