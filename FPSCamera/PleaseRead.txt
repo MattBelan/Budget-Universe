@@ -1,0 +1,13 @@
+Hi there.
+
+There may be an issue where the project does not build when you attemp to run it.
+If this happens, please try the following:
+
+Make sure you are building to x86
+-It didn't want to work on x64, and we couldn't find a solution to that
+
+Try Changing the Windows SDK Version
+-This can be changed by going to Project->Properties->Configuration Properties under General
+-We don't know why this is an issue, but changing it will most likely solve any issues that arrise
+
+Thanks for understanding

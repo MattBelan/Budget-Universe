@@ -2,6 +2,8 @@
 #include <vector>
 #include "Node.h"
 #include "GameEntity.h"
+#include <irrKlang.h>
+using namespace irrklang;
 
 class KDTree
 {
@@ -20,5 +22,7 @@ public:
 	GameEntity* center;
 
 	bool SAT(GameEntity a, GameEntity b);
+
+	ISoundEngine *explosion = createIrrKlangDevice();
 };
 

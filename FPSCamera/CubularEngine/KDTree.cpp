@@ -34,6 +34,7 @@ KDTree::~KDTree()
 	{
 		delete tree[i];
 	}
+	explosion->drop();
 }
 
 //Puts specified object as a leaf of one of the nodes of the tree
@@ -189,6 +190,8 @@ void KDTree::CheckCollisions(vector<GameEntity*> objs, int numTotalObjs)
 							nodeObjs = tree[i]->GetObjects();
 							numObjs = tree[i]->numObjs;
 
+							explosion->setSoundVolume(.3f);
+							explosion->play2D("assets/Audio/explosion.mp3", GL_FALSE);
 						}
 					}
 

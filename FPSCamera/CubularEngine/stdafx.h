@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+
 //Memory leak detection
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC  

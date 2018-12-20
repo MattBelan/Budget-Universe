@@ -20,6 +20,17 @@
 ///https://learnopengl.com/Advanced-OpenGL/Cubemaps
 ///DynamicShader is based on the shader built in the LearnOpengl.com tutorials, allows for easier dynamic objects
 ///https://learnopengl.com/Getting-started/OpenGL
+///Audio
+///https://learnopengl.com/In-Practice/2D-Game/Audio
+///https://www.ambiera.com/irrklang/tutorial-helloworld.html
+///Background music- https://www.bensound.com/royalty-free-music/track/relaxing
+///Collision Sound- http://soundbible.com/1468-Depth-Charge-Shorter.html
+
+
+//IF THE PROJECT DOES NOT BUILD
+///Make sure you are building on x86
+///If that fails, try changing the Windows SDK Version under Project->Properties->Configuration Properties under General
+///We ran into some issues with the SDK version being an issue, and couldn't find a consitent solution other than changing the version
 
 #include "stdafx.h"
 #include "Shader.h"
@@ -38,6 +49,9 @@
 #include <filesystem>
 #include <iostream>
 #include <glm/gtc/quaternion.hpp>
+
+#include <irrKlang.h>
+using namespace irrklang;
 
 using namespace std;
 
@@ -369,6 +383,17 @@ int main()
 			"assets/Menus/mainMenu.png",
 			"assets/Skymap/back.png"
 		};
+		//face data for main menu
+		std::vector<std::string> creditsFaces
+		{
+			"assets/Skymap/right.png",
+			"assets/Skymap/left.png",
+			"assets/Skymap/top.png",
+			"assets/Skymap/bot.png",
+			"assets/Menus/credits.png",
+			"assets/Skymap/back.png"
+		};
+		
 
 		unsigned int cubemapTexture = loadSkybox(mainFaces);
 		//cube1
@@ -652,9 +677,19 @@ int main()
 		float instantiateSpeed = 6.f;
 		skyboxShader.use();
 		skyboxShader.setInt("skybox", 0);
+
+		//audio player
+		ISoundEngine *music = createIrrKlangDevice();
+		music->play2D("assets/Audio/bensound-relaxing.mp3", GL_TRUE);
+		music->setSoundVolume(.3f);
+
         //main loop
         while (!glfwWindowShouldClose(window))
         {
+			prevTime = tm;
+			tm = glfwGetTime();
+
+			float dt = tm - prevTime;
             /* INPUT */
             
                 //checks events to see if there are pending input
@@ -690,14 +725,15 @@ int main()
 						}
 					}
 					myCamera->Reset();
+					playing = true;
 				}
 				if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) //switches to the credits
 				{
 					menu = false;
 					game = false;
 					credits = true;
-					myCamera->position = creditsPos;
-					unsigned int cubemapTexture = loadSkybox(mainFaces);
+					myCamera->position = menuPos;
+					cubemapTexture = loadSkybox(creditsFaces);
 				}
 				
 				if (game) 
@@ -756,11 +792,6 @@ int main()
 
 					/* GAMEPLAY UPDATE */
 					if (playing) {
-						prevTime = tm;
-						tm = glfwGetTime();
-
-						float dt = tm - prevTime;
-
 
 						for (size_t i = 0; i < cubes.size(); i++)
 						{
@@ -831,10 +862,7 @@ int main()
 				}
 			
 				if (menu) {
-					prevTime = tm;
-					tm = glfwGetTime();
-
-					float dt = tm - prevTime;
+					
 					menuBox->SLERP(dt);
 					//myCamera->Update();
 					myCamera->Update();
@@ -879,7 +907,6 @@ int main()
 					}
 
 					/* RENDER */
-					creditsBox->Render(myCamera);
 					glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 					skyboxShader.use();
 					view = glm::mat4(glm::mat3(myCamera->viewMatrix)); // remove translation from the view matrix
@@ -920,6 +947,7 @@ int main()
 		delete tree;
 		delete menuBox;
 		delete creditsBox;
+		music->drop();
         Input::Release();
     }
 

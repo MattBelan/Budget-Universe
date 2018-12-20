@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{AB67ECE4-1431-448D-A230-DAE95433ACC5}</ProjectGuid>
     <RootNamespace>CubularEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <ProjectName>CubularEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -77,11 +77,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\GLEW\include;$(SolutionDir)libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libraries\irrKlang-1.6.0\include;$(SolutionDir)libraries\GLFW\include;$(SolutionDir)libraries\GLEW\include;$(SolutionDir)libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)libraries\GLEW\lib\Release\Win32;$(SolutionDir)libraries\GLFW\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libraries\irrKlang-1.6.0\lib\Win32-visualStudio;$(SolutionDir)libraries\GLEW\lib\Release\Win32;$(SolutionDir)libraries\GLFW\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>irrKlang.lib;opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(OutDir)assets"
